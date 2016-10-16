@@ -1,2 +1,11 @@
-# skeleton
 skeleton
+========
+
+skeleton
+
+
+License
+-------
+
+MIT License
+
