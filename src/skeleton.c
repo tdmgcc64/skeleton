@@ -24,6 +24,8 @@ LP_##FN FN = NULL;
   if(!FN){ fprintf(stderr, "cannot find function: %s\n", #FN); R = 0; } \
 }while(0)
 
+#define LDFN(FN) LOADFNC(result, m, FN)
+
 #define LIBBZ2 "libbz2"
 #define LIBCURL "libcurl"
 #define LIBEAY32 "libeay32" // "ssleay32"
@@ -44,10 +46,10 @@ DEFFN_T(__cdecl, curl_free, int, void *)
 DEFFN_T(__cdecl, curl_getenv, char *, char *)
 DEFFN_T(__cdecl, curl_version, char *, void)
 DEFFN_T(__cdecl, curl_easy_strerror, const char *, CURLcode)
+DEFFN_T(__cdecl, curl_easy_cleanup, void, CURL *)
 DEFFN_T(__cdecl, curl_easy_init, CURL *, void)
 DEFFN_T(__cdecl, curl_easy_setopt, CURLcode, CURL *, CURLoption, ...)
 DEFFN_T(__cdecl, curl_easy_perform, CURLcode, CURL *)
-DEFFN_T(__cdecl, curl_easy_cleanup, void, CURL *)
 
 char *ENV_KEYS[] = {"dummy", "tmp", "Temp", "tz"};
 
@@ -64,14 +66,9 @@ HMODULE load_func(char *libname)
     fprintf(stderr, "not implemented\n");
     result = 0;
   }else if(!strcmp(libname, LIBCURL)){
-    LOADFNC(result, m, curl_free);
-    LOADFNC(result, m, curl_getenv);
-    LOADFNC(result, m, curl_version);
-    LOADFNC(result, m, curl_easy_strerror);
-    LOADFNC(result, m, curl_easy_init);
-    LOADFNC(result, m, curl_easy_setopt);
-    LOADFNC(result, m, curl_easy_perform);
-    LOADFNC(result, m, curl_easy_cleanup);
+    LDFN(curl_free); LDFN(curl_getenv); LDFN(curl_version);
+    LDFN(curl_easy_strerror); LDFN(curl_easy_cleanup); LDFN(curl_easy_init);
+    LDFN(curl_easy_setopt); LDFN(curl_easy_perform);
   }else if(!strcmp(libname, LIBEAY32)){
     fprintf(stderr, "not implemented\n");
     result = 0;
