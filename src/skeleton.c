@@ -8,7 +8,9 @@
     Couldn't resolve host name
 */
 
+#ifndef UNICODE
 #define UNICODE
+#endif
 #include <windows.h>
 
 #include <stdio.h>
@@ -92,8 +94,6 @@ int test_curl()
   int i;
   CURL *curl;
   CURLcode res;
-  HMODULE m = load_func(LIBCURL);
-  if(!m) return 0;
   printf("[%s]\n", curl_version());
   for(i = 0; i < sizeof(ENV_KEYS) / sizeof(ENV_KEYS[0]); ++i){
     char *v = curl_getenv(ENV_KEYS[i]);
@@ -109,16 +109,18 @@ int test_curl()
       fprintf(stderr, "error: %s\n", curl_easy_strerror(res));
     curl_easy_cleanup(curl);
   }
-  FreeLibrary(m);
-  return 1;
+  return 0;
 }
 
 int main(int ac, char **av)
 {
   int i;
+  HMODULE m = load_func(LIBCURL);
+  if(!m) return 1;
   printf("sizeof(size_t): %08x\n", sizeof(size_t));
   for(i = 0; i < ac; ++i)
     printf("%d %s\n", i, av[i]);
   test_curl();
+  FreeLibrary(m);
   return 0;
 }
